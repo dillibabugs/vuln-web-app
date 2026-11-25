@@ -318,10 +318,19 @@ def page():
         description: The output of the command.
     """
 
+    allowed_commands = {
+        "whoami": ["whoami"],
+        "date": ["date"],
+        "uptime": ["uptime"]
+    }
 
-    cmd = request.args.get("cmd")
+    cmd = request.args.get("cmd", "")
+    command_to_run = allowed_commands.get(cmd)
 
-    return subprocess.check_output(cmd, shell=True)
+    if not command_to_run:
+        return "Unsupported command", 400
+
+    return subprocess.check_output(command_to_run, text=True)
     # command_to_be_executed = ['cat', '/']
     # return subprocess.check_output(command_to_be_executed, shell=True)
 
